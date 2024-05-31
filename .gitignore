@@ -400,3 +400,8 @@ FodyWeavers.xsd
 # SQLite temporary files 
 *.db-shm
 *.db-wal
+
+# Local Mac
+.DS_Store
+Starter files/.idea
+Finished solution/.idea
