@@ -12,15 +12,15 @@ namespace EmployeeManagement.Business
             Guid.Parse("37e03ca7-c730-4351-834c-b66f280cdb01"),
             Guid.Parse("1fd115cf-f44c-4982-86bc-a8fe2e4ff83e") };
 
-        private readonly IEmployeeManagementRepository _repository;
+        private readonly IEmployeeManagementRepository _employeeManagementRepository;
         private readonly EmployeeFactory _employeeFactory;
 
         public event EventHandler<EmployeeIsAbsentEventArgs>? EmployeeIsAbsent;
 
-        public EmployeeService(IEmployeeManagementRepository repository,
+        public EmployeeService(IEmployeeManagementRepository employeeManagementRepository,
             EmployeeFactory employeeFactory)
         {
-            _repository = repository;
+            _employeeManagementRepository = employeeManagementRepository;
             _employeeFactory = employeeFactory;
         }
 
@@ -39,7 +39,7 @@ namespace EmployeeManagement.Business
             employee.AttendedCourses.Add(attendedCourse);
 
             // save changes 
-            await _repository.SaveChangesAsync();
+            await _employeeManagementRepository.SaveChangesAsync();
 
             // execute business logic: when a course is attended, 
             // the suggested bonus must be recalculated
@@ -53,7 +53,7 @@ namespace EmployeeManagement.Business
             employee.MinimumRaiseGiven = true;
 
             // save this
-            await _repository.SaveChangesAsync();
+            await _employeeManagementRepository.SaveChangesAsync();
         }
 
         public async Task GiveRaiseAsync(InternalEmployee employee, int raise)
@@ -61,10 +61,10 @@ namespace EmployeeManagement.Business
             // raise must be at least 100
             if (raise < 100)
             {
-                throw new EmployeeInvalidRaiseException(
-                    "Invalid raise: raise must be higher than or equal to 100.", raise);
-                //throw new Exception(
-                //  "Invalid raise: raise must be higher than or equal to 100."); 
+                // throw new EmployeeInvalidRaiseException(
+                //     "Invalid raise: raise must be higher than or equal to 100.", raise);
+                throw new Exception(
+                  "Invalid raise: raise must be higher than or equal to 100."); 
             }
 
             // if minimum raise was previously given, the raise must 
@@ -83,13 +83,13 @@ namespace EmployeeManagement.Business
             {
                 employee.Salary += raise;
                 employee.MinimumRaiseGiven = false;
-                await _repository.SaveChangesAsync();
+                await _employeeManagementRepository.SaveChangesAsync();
             }
         }
 
         public async Task<InternalEmployee?> FetchInternalEmployeeAsync(Guid employeeId)
         {
-            var employee = await _repository.GetInternalEmployeeAsync(employeeId);
+            var employee = await _employeeManagementRepository.GetInternalEmployeeAsync(employeeId);
 
             if (employee != null)
             {
@@ -101,7 +101,7 @@ namespace EmployeeManagement.Business
 
         public async Task<IEnumerable<InternalEmployee>> FetchInternalEmployeesAsync()
         {
-            var employees = await _repository.GetInternalEmployeesAsync();
+            var employees = await _employeeManagementRepository.GetInternalEmployeesAsync();
 
             foreach (var employee in employees)
             {
@@ -114,7 +114,7 @@ namespace EmployeeManagement.Business
 
         public InternalEmployee? FetchInternalEmployee(Guid employeeId)
         {
-            var employee = _repository.GetInternalEmployee(employeeId);
+            var employee = _employeeManagementRepository.GetInternalEmployee(employeeId);
 
             if (employee != null)
             {
@@ -136,7 +136,7 @@ namespace EmployeeManagement.Business
             // during vetting process
 
             // get those courses  
-            var obligatoryCourses = _repository.GetCourses(_obligatoryCourseIds);
+            var obligatoryCourses = _employeeManagementRepository.GetCourses(_obligatoryCourseIds);
 
             // add them for this employee
             foreach (var obligatoryCourse in obligatoryCourses)
@@ -161,7 +161,7 @@ namespace EmployeeManagement.Business
             // during vetting process
 
             // get those courses  
-            var obligatoryCourses = await _repository.GetCoursesAsync(_obligatoryCourseIds);
+            var obligatoryCourses = await _employeeManagementRepository.GetCoursesAsync(_obligatoryCourseIds);
 
             // add them for this employee
             foreach (var obligatoryCourse in obligatoryCourses)
@@ -187,8 +187,8 @@ namespace EmployeeManagement.Business
 
         public async Task AddInternalEmployeeAsync(InternalEmployee internalEmployee)
         {
-            _repository.AddInternalEmployee(internalEmployee);
-            await _repository.SaveChangesAsync();
+            _employeeManagementRepository.AddInternalEmployee(internalEmployee);
+            await _employeeManagementRepository.SaveChangesAsync();
         }
 
         public void NotifyOfAbsence(Employee employee)

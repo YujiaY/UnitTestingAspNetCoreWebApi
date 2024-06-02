@@ -91,4 +91,23 @@ public class EmployeeFactoryTests
         Assert.Equal(2500, employee.Salary, 0);
         employee.Salary.Should().BeApproximately(2500, 0.33m);
     }
+    
+    [Fact]
+    // [Trait("Category", "EmployeeFactory_CreateEmployee_ReturnType")]
+    public void CreateEmployee_IsExternalIsTrue_ReturnTypeMustBeExternalEmployee()
+    {
+        // Arrange 
+        var employeeFactory = new EmployeeFactory();
+
+        // Act
+        var employee = employeeFactory
+            .CreateEmployee("Kevin", "Dockx", "Marvin", true);
+
+        // Assert
+        Assert.IsType<ExternalEmployee>(employee);
+        Assert.IsAssignableFrom<Employee>(employee);
+
+        employee.Should().BeOfType<ExternalEmployee>();
+        employee.Should().BeAssignableTo<Employee>();
+    }
 }
