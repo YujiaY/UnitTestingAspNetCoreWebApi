@@ -4,16 +4,27 @@ using FluentAssertions;
 
 namespace EmployeeManagement.Test;
 
-public class EmployeeFactoryTests
+public class EmployeeFactoryTests: IDisposable
 {
+    private EmployeeFactory _employeeFactory;
+    public EmployeeFactoryTests()
+    {
+        _employeeFactory = new EmployeeFactory();
+    }
+
+    public void Dispose()
+    {
+        // clean up the setup code, if required
+    }
+    
     [Fact]
     public void CreateEmployee_ConstructInternalEmployee_SalaryMustBe2500()
     {
         // Arrange
-        var employeeFactory = new EmployeeFactory();
+        
 
         // Act
-        var employee = (InternalEmployee)employeeFactory.CreateEmployee("John", "Doe");
+        var employee = (InternalEmployee)_employeeFactory.CreateEmployee("John", "Doe");
 
         // Assert with xUnit
         Assert.Equal(2500, employee.Salary);
@@ -27,10 +38,10 @@ public class EmployeeFactoryTests
     public void CreateEmployee_ConstructInternalEmployee_SalaryMustBeBetween2500And3500()
     {
         // Arrange 
-        var employeeFactory = new EmployeeFactory();
+        
 
         // Act
-        var employee = (InternalEmployee)employeeFactory
+        var employee = (InternalEmployee)_employeeFactory
             .CreateEmployee("Kevin", "Dockx");
 
         // Assert
@@ -48,10 +59,10 @@ public class EmployeeFactoryTests
     public void CreateEmployee_ConstructInternalEmployee_SalaryMustBeBetween2500And3500_Alternative()
     {
         // Arrange 
-        var employeeFactory = new EmployeeFactory();
+        
 
         // Act
-        var employee = (InternalEmployee)employeeFactory
+        var employee = (InternalEmployee)_employeeFactory
             .CreateEmployee("Kevin", "Dockx");
 
         // Assert
@@ -64,10 +75,10 @@ public class EmployeeFactoryTests
     public void CreateEmployee_ConstructInternalEmployee_SalaryMustBeBetween2500And3500_AlternativeWithInRange()
     {
         // Arrange 
-        var employeeFactory = new EmployeeFactory();
+        
 
         // Act
-        var employee = (InternalEmployee)employeeFactory
+        var employee = (InternalEmployee)_employeeFactory
             .CreateEmployee("Kevin", "Dockx");
 
         // Assert
@@ -80,10 +91,10 @@ public class EmployeeFactoryTests
     public void CreateEmployee_ConstructInternalEmployee_SalaryMustBe2500_PrecisionExample()
     {
         // Arrange 
-        var employeeFactory = new EmployeeFactory();
+        
 
         // Act
-        var employee = (InternalEmployee)employeeFactory
+        var employee = (InternalEmployee)_employeeFactory
             .CreateEmployee("Kevin", "Dockx");
         employee.Salary = 2500.323m;
 
@@ -97,10 +108,10 @@ public class EmployeeFactoryTests
     public void CreateEmployee_IsExternalIsTrue_ReturnTypeMustBeExternalEmployee()
     {
         // Arrange 
-        var employeeFactory = new EmployeeFactory();
+        
 
         // Act
-        var employee = employeeFactory
+        var employee = _employeeFactory
             .CreateEmployee("Kevin", "Dockx", "Marvin", true);
 
         // Assert
