@@ -5,7 +5,7 @@ using Xunit;
 namespace EmployeeManagement.Test
 {
     [Collection("EmployeeServiceCollection")]
-    public class DataDrivenEmployeeServiceTests : IClassFixture<EmployeeServiceFixture>
+    public class DataDrivenEmployeeServiceTests //: IClassFixture<EmployeeServiceFixture>
     {
         private readonly EmployeeServiceFixture _employeeServiceFixture;
 
