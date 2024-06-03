@@ -61,10 +61,10 @@ namespace EmployeeManagement.Business
             // raise must be at least 100
             if (raise < 100)
             {
-                // throw new EmployeeInvalidRaiseException(
-                //     "Invalid raise: raise must be higher than or equal to 100.", raise);
-                throw new Exception(
-                  "Invalid raise: raise must be higher than or equal to 100."); 
+                throw new EmployeeInvalidRaiseException(
+                    "Invalid raise: raise must be higher than or equal to 100.", raise);
+                // throw new Exception(
+                //   "Invalid raise: raise must be higher than or equal to 100."); 
             }
 
             // if minimum raise was previously given, the raise must 

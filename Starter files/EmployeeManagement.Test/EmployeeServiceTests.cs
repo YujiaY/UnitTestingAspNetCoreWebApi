@@ -229,13 +229,13 @@ public class EmployeeServiceTests
             // .Awaiting(async () => await employeeService.GiveRaiseAsync(internalEmployee, 10))
             // .Should().ThrowExactlyAsync<EmployeeInvalidRaiseException>("because the raise amount is invalid");
         
-            await FluentActions
-            .Awaiting(async () => await employeeService.GiveRaiseAsync(internalEmployee, 10))
-            .Should().ThrowAsync<Exception>("because the raise amount is invalid");
+            // await FluentActions
+            // .Awaiting(async () => await employeeService.GiveRaiseAsync(internalEmployee, 10))
+            // .Should().ThrowAsync<Exception>("because the raise amount is invalid");
         
             await FluentActions
             .Awaiting(async () => await employeeService.GiveRaiseAsync(internalEmployee, 10))
-            .Should().ThrowExactlyAsync<Exception>("because the raise amount is invalid");
+            .Should().ThrowExactlyAsync<EmployeeInvalidRaiseException>("because the raise amount is invalid");
         }
     }
     
