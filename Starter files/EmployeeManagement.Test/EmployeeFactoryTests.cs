@@ -17,7 +17,9 @@ public class EmployeeFactoryTests: IDisposable
         // clean up the setup code, if required
     }
     
-    [Fact]
+    // [Fact]
+    [Fact(Skip = "Skipping this one for demo reasons.")]
+    [Trait("Category", "EmployeeFactory_CreateEmployee_Salary")]
     public void CreateEmployee_ConstructInternalEmployee_SalaryMustBe2500()
     {
         // Arrange
@@ -34,7 +36,7 @@ public class EmployeeFactoryTests: IDisposable
     }
     
     [Fact]
-    // [Trait("Category", "EmployeeFactory_CreateEmployee_Salary")]
+    [Trait("Category", "EmployeeFactory_CreateEmployee_Salary")]
     public void CreateEmployee_ConstructInternalEmployee_SalaryMustBeBetween2500And3500()
     {
         // Arrange 
@@ -55,7 +57,7 @@ public class EmployeeFactoryTests: IDisposable
     }
     
     [Fact]
-    // [Trait("Category", "EmployeeFactory_CreateEmployee_Salary")]
+    [Trait("Category", "EmployeeFactory_CreateEmployee_Salary")]
     public void CreateEmployee_ConstructInternalEmployee_SalaryMustBeBetween2500And3500_Alternative()
     {
         // Arrange 
@@ -71,7 +73,7 @@ public class EmployeeFactoryTests: IDisposable
     }
     
     [Fact]
-    // [Trait("Category", "EmployeeFactory_CreateEmployee_Salary")]
+    [Trait("Category", "EmployeeFactory_CreateEmployee_Salary")]
     public void CreateEmployee_ConstructInternalEmployee_SalaryMustBeBetween2500And3500_AlternativeWithInRange()
     {
         // Arrange 
@@ -104,7 +106,7 @@ public class EmployeeFactoryTests: IDisposable
     }
     
     [Fact]
-    // [Trait("Category", "EmployeeFactory_CreateEmployee_ReturnType")]
+    [Trait("Category", "EmployeeFactory_CreateEmployee_ReturnType")]
     public void CreateEmployee_IsExternalIsTrue_ReturnTypeMustBeExternalEmployee()
     {
         // Arrange 

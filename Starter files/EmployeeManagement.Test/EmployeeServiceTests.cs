@@ -6,6 +6,7 @@ using EmployeeManagement.Services.Test;
 using EmployeeManagement.Test.Fixtures;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Xunit.Abstractions;
 
 namespace EmployeeManagement.Test;
 
@@ -13,10 +14,12 @@ namespace EmployeeManagement.Test;
 public class EmployeeServiceTests //: IClassFixture<EmployeeServiceFixture>
 {
     private readonly EmployeeServiceFixture _employeeServiceFixture;
+    private readonly ITestOutputHelper _testOutputHelper;
 
-    public EmployeeServiceTests(EmployeeServiceFixture employeeServiceFixture)
+    public EmployeeServiceTests(EmployeeServiceFixture employeeServiceFixture, ITestOutputHelper testOutputHelper)
     {
         _employeeServiceFixture = employeeServiceFixture;
+        _testOutputHelper = testOutputHelper;
     }
     
     [Fact]
@@ -35,6 +38,17 @@ public class EmployeeServiceTests //: IClassFixture<EmployeeServiceFixture>
         // Act
         var internalEmployee = _employeeServiceFixture.EmployeeService
             .CreateInternalEmployee("Brooklyn", "Cannon");
+        
+        _testOutputHelper.WriteLine($"TestOutputHelper: Employee after Act: " +
+                                    $"{internalEmployee.FirstName} {internalEmployee.LastName}");
+        Console.WriteLine($"Console Employee after Act: " +
+                          $"{internalEmployee.FirstName} {internalEmployee.LastName}");
+        internalEmployee.AttendedCourses
+            .ForEach(c =>
+            {
+                _testOutputHelper.WriteLine($"TestOutputHelper: Attended course: {c.Id} {c.Title}");
+                Console.WriteLine($"Console Attended course: {c.Id} {c.Title}");
+            });
 
         // Assert
         Assert.Contains(obligatoryCourse, internalEmployee.AttendedCourses);
