@@ -1,5 +1,6 @@
 using EmployeeManagement.DataAccess.Entities;
 using EmployeeManagement.Test.Fixtures;
+using EmployeeManagement.Test.TestData;
 using Xunit;
 
 namespace EmployeeManagement.Test
@@ -13,6 +14,86 @@ namespace EmployeeManagement.Test
             EmployeeServiceFixture employeeServiceFixture)
         {
             _employeeServiceFixture = employeeServiceFixture;
+        }
+        public static IEnumerable<object[]> ExampleTestDataForGiveRaise_WithProperty
+        {
+            get
+            {
+                return new List<object[]>
+                {
+                    new object[] { 100, true },
+                    new object[] { 200, false }
+                };
+            }
+        }
+        
+        public static IEnumerable<object[]> ExampleTestDataForGiveRaise_WithMethod()
+        {
+            return new List<object[]>
+            {
+                new object[] { 100, true },
+                new object[] { 200, false }
+            };
+        }
+        
+        public static IEnumerable<object[]> ExampleTestDataForGiveRaise_WithMethodAndParam(
+            int testDataInstancesToProvide)
+        {
+            var testData = new List<object[]>
+            {
+                new object[] { 100, true },
+                new object[] { 200, false }
+            };
+
+            return testData.Take(testDataInstancesToProvide);
+        }
+        
+        [Theory]
+        // [InlineData(100, true)]
+        // [InlineData(200, false)]
+        // [MemberData(nameof(ExampleTestDataForGiveRaise_WithProperty))]
+        // [MemberData("ExampleTestDataForGiveRaise_WithProperty")]
+        // [MemberData("ExampleTestDataForGiveRaise_WithMethod")]
+        // [MemberData(nameof(StronglyTypedExampleTestDataForGiveRaise_WithProperty))]
+        // [MemberData(nameof(ExampleTestDataForGiveRaise_WithMethodAndParam), 2)]
+        // [MemberData(
+        //     nameof(DataDrivenEmployeeServiceTests.ExampleTestDataForGiveRaise_WithMethodAndParam),
+        //     2,
+        //     MemberType = typeof(DataDrivenEmployeeServiceTests))]
+        [ClassData(typeof(EmployeeServiceTestData))]
+        //[ClassData(typeof(StronglyTypedEmployeeServiceTestData))]
+        // [ClassData(typeof(StronglyTypedEmployeeServiceTestData_FromFile))]
+        public async Task GiveRaise_RaiseGiven_EmployeeMinimumRaiseGivenMatchesValue(
+            int raiseGiven, bool expectedValueForMinimumRaiseGiven)
+        {
+            // Arrange  
+            var internalEmployee = new InternalEmployee(
+                "Brooklyn", "Cannon", 5, 3000, false, 1);
+
+            // Act
+            await _employeeServiceFixture.EmployeeService.GiveRaiseAsync(
+                internalEmployee, raiseGiven);
+
+            // Assert
+            Assert.Equal(expectedValueForMinimumRaiseGiven, 
+                internalEmployee.MinimumRaiseGiven);
+        }
+        
+        [Theory]
+        [InlineData("1fd115cf-f44c-4982-86bc-a8fe2e4ff83e")]
+        [InlineData("37e03ca7-c730-4351-834c-b66f280cdb01")]
+        public void CreateInternalEmployee_InternalEmployeeCreated_MustHaveAttendedSecondObligatoryCourse(
+            Guid courseId)
+        {
+            // Arrange 
+
+            // Act
+            var internalEmployee = _employeeServiceFixture.EmployeeService
+                .CreateInternalEmployee("Brooklyn", "Cannon");
+
+            // Assert
+            Assert.Contains(internalEmployee.AttendedCourses,
+                course => course.Id == courseId);
         }
 
         [Fact]

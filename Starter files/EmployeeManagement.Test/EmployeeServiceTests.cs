@@ -22,6 +22,32 @@ public class EmployeeServiceTests //: IClassFixture<EmployeeServiceFixture>
         _testOutputHelper = testOutputHelper;
     }
     
+    [Theory]
+    // [MemberData(nameof(DataDrivenEmployeeServiceTests.ExampleTestDataForGiveRaise_WithMethodAndParam), 2)]
+    [MemberData(
+        nameof(DataDrivenEmployeeServiceTests.ExampleTestDataForGiveRaise_WithMethodAndParam),
+        2,
+        MemberType = typeof(DataDrivenEmployeeServiceTests))
+    ]
+    //[ClassData(typeof(EmployeeServiceTestData))]
+    //[ClassData(typeof(StronglyTypedEmployeeServiceTestData))]
+    // [ClassData(typeof(StronglyTypedEmployeeServiceTestData_FromFile))]
+    public async Task GiveRaise_RaiseGiven_EmployeeMinimumRaiseGivenMatchesValue(
+        int raiseGiven, bool expectedValueForMinimumRaiseGiven)
+    {
+        // Arrange  
+        var internalEmployee = new InternalEmployee(
+            "Brooklyn", "Cannon", 5, 3000, false, 1);
+
+        // Act
+        await _employeeServiceFixture.EmployeeService.GiveRaiseAsync(
+            internalEmployee, raiseGiven);
+
+        // Assert
+        Assert.Equal(expectedValueForMinimumRaiseGiven, 
+            internalEmployee.MinimumRaiseGiven);
+    }
+    
     [Fact]
     public void CreateInternalEmployee_InternalEmployeeCreated_MustHaveAttendedFirstObligatoryCourse_WithObject()
     {
