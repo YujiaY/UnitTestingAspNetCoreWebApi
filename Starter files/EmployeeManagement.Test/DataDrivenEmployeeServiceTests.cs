@@ -48,20 +48,32 @@ namespace EmployeeManagement.Test
             return testData.Take(testDataInstancesToProvide);
         }
         
+        public static TheoryData<int,bool> StronglyTypedExampleTestDataForGiveRaise_WithProperty
+        {
+            get
+            {
+                return new TheoryData<int, bool>()
+                {
+                    { 100, true },
+                    { 200, false }
+                };
+            }
+        }
+        
         [Theory]
         // [InlineData(100, true)]
         // [InlineData(200, false)]
         // [MemberData(nameof(ExampleTestDataForGiveRaise_WithProperty))]
         // [MemberData("ExampleTestDataForGiveRaise_WithProperty")]
         // [MemberData("ExampleTestDataForGiveRaise_WithMethod")]
-        // [MemberData(nameof(StronglyTypedExampleTestDataForGiveRaise_WithProperty))]
+        [MemberData(nameof(StronglyTypedExampleTestDataForGiveRaise_WithProperty))]
         // [MemberData(nameof(ExampleTestDataForGiveRaise_WithMethodAndParam), 2)]
         // [MemberData(
         //     nameof(DataDrivenEmployeeServiceTests.ExampleTestDataForGiveRaise_WithMethodAndParam),
         //     2,
         //     MemberType = typeof(DataDrivenEmployeeServiceTests))]
-        [ClassData(typeof(EmployeeServiceTestData))]
-        //[ClassData(typeof(StronglyTypedEmployeeServiceTestData))]
+        // [ClassData(typeof(EmployeeServiceTestData))]
+        [ClassData(typeof(StronglyTypedEmployeeServiceTestData))]
         // [ClassData(typeof(StronglyTypedEmployeeServiceTestData_FromFile))]
         public async Task GiveRaise_RaiseGiven_EmployeeMinimumRaiseGivenMatchesValue(
             int raiseGiven, bool expectedValueForMinimumRaiseGiven)
