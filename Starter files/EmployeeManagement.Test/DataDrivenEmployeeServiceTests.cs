@@ -73,8 +73,8 @@ namespace EmployeeManagement.Test
         //     2,
         //     MemberType = typeof(DataDrivenEmployeeServiceTests))]
         // [ClassData(typeof(EmployeeServiceTestData))]
-        [ClassData(typeof(StronglyTypedEmployeeServiceTestData))]
-        // [ClassData(typeof(StronglyTypedEmployeeServiceTestData_FromFile))]
+        // [ClassData(typeof(StronglyTypedEmployeeServiceTestData))]
+        [ClassData(typeof(StronglyTypedEmployeeServiceTestData_FromFile))]
         public async Task GiveRaise_RaiseGiven_EmployeeMinimumRaiseGivenMatchesValue(
             int raiseGiven, bool expectedValueForMinimumRaiseGiven)
         {
