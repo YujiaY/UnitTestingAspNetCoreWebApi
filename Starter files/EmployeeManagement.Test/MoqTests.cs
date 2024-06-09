@@ -14,20 +14,35 @@ namespace EmployeeManagement.Test
         public void FetchInternalEmployee_EmployeeFetched_SuggestedBonusMustBeCalculated()
         {
             // Arrange
-            var employeeManagementTestDataRepository =
-              new EmployeeManagementTestDataRepository();
-            var employeeFactoryOrigin = new EmployeeFactory();
+            // var employeeManagementTestDataRepository =
+            //   new EmployeeManagementTestDataRepository();
+            var employeeManagementTestDataRepositoryMock =
+                new Mock<IEmployeeManagementRepository>();
+            // var employeeFactoryOrigin = new EmployeeFactory();
             var employeeFactoryMock = new Mock<EmployeeFactory>();
             var employeeService = new EmployeeService(
-                employeeManagementTestDataRepository,
+                employeeManagementTestDataRepositoryMock.Object,
                 // employeeFactoryOrigin);
                 employeeFactoryMock.Object);
+            
+            employeeManagementTestDataRepositoryMock
+                .Setup(m => m.GetInternalEmployee(It.IsAny<Guid>()))
+                .Returns(new InternalEmployee(
+                    "F_Test", "L_Test", 2, 2500, false, 2)
+                    {
+                        AttendedCourses = new List<Course>()
+                        {
+                            new Course("A course" ), new Course("Another course")
+                        }
+                    }
+                );
 
             // Act 
-            var employee = employeeService.FetchInternalEmployee(
-                Guid.Parse("72f2f5fe-e50c-4966-8420-d50258aefdcb"));
+            // var employee = employeeService.FetchInternalEmployee(
+            //     Guid.Parse("72f2f5fe-e50c-4966-8420-d50258aefdcb"));
+            var employee = employeeService.FetchInternalEmployee(Guid.Empty);
 
-            // Assert  
+            // Assert
             Assert.Equal(400, employee.SuggestedBonus);
 
             employee.SuggestedBonus.Should().Be(400);
@@ -78,6 +93,63 @@ namespace EmployeeManagement.Test
 
             // Assert  
             Assert.Equal(suggestedBonus, employee.SuggestedBonus);
+        }
+        
+        [Fact]
+        public void FetchInternalEmployee_EmployeeFetched_SuggestedBonusMustBeCalculated_MoqInterface()
+        {
+            // Arrange
+            //var employeeManagementTestDataRepository =
+            //  new EmployeeManagementTestDataRepository();
+            var employeeManagementTestDataRepositoryMock =
+                new Mock<IEmployeeManagementRepository>();
+
+            employeeManagementTestDataRepositoryMock
+                .Setup(m => m.GetInternalEmployee(It.IsAny<Guid>()))
+                .Returns(new InternalEmployee("Tony", "Hall", 2, 2500, false, 2)
+                {
+                    AttendedCourses = new List<Course>() {
+                        new Course("A course"), new Course("Another course") }
+                });
+
+            var employeeFactoryMock = new Mock<EmployeeFactory>();
+            var employeeService = new EmployeeService(
+                employeeManagementTestDataRepositoryMock.Object,
+                employeeFactoryMock.Object);
+
+            // Act 
+            var employee = employeeService.FetchInternalEmployee(
+                Guid.Empty);
+
+            // Assert  
+            Assert.Equal(400, employee.SuggestedBonus);
+        }
+        
+        [Fact]
+        public async Task FetchInternalEmployee_EmployeeFetched_SuggestedBonusMustBeCalculated_MoqInterface_Async()
+        {
+            // Arrange
+            var employeeManagementTestDataRepositoryMock =
+                new Mock<IEmployeeManagementRepository>();
+
+            employeeManagementTestDataRepositoryMock
+                .Setup(m => m.GetInternalEmployeeAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(new InternalEmployee("Tony", "Hall", 2, 2500, false, 2)
+                {
+                    AttendedCourses = new List<Course>() {
+                        new Course("A course"), new Course("Another course") }
+                });
+
+            var employeeFactoryMock = new Mock<EmployeeFactory>();
+            var employeeService = new EmployeeService(
+                employeeManagementTestDataRepositoryMock.Object,
+                employeeFactoryMock.Object);
+
+            // Act 
+            var employee = await employeeService.FetchInternalEmployeeAsync(Guid.Empty);
+
+            // Assert  
+            Assert.Equal(400, employee.SuggestedBonus);
         }
 
     }
