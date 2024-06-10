@@ -1,6 +1,8 @@
-﻿using EmployeeManagement.Business;
+﻿using AutoMapper;
+using EmployeeManagement.Business;
 using EmployeeManagement.Controllers;
 using EmployeeManagement.DataAccess.Entities;
+using EmployeeManagement.Models;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
@@ -31,17 +33,16 @@ namespace EmployeeManagement.Test
                     new InternalEmployee("Anne", "Adams", 3, 4000, false, 3)
                 });
             //
-            // //var mapperMock = new Mock<IMapper>();
-            // //mapperMock.Setup(m =>
-            // //     m.Map<InternalEmployee, Models.InternalEmployeeDto>
-            // //     (It.IsAny<InternalEmployee>()))
-            // //     .Returns(new Models.InternalEmployeeDto());
-            // var mapperConfiguration = new MapperConfiguration(
-            //     cfg => cfg.AddProfile<MapperProfiles.EmployeeProfile>());
-            // var mapper = new Mapper(mapperConfiguration);
-            //
+            var mapperMock = new Mock<IMapper>();
+            mapperMock.Setup(m =>
+                 m.Map<InternalEmployee, InternalEmployeeDto>(It.IsAny<InternalEmployee>()))
+                 .Returns(new InternalEmployeeDto());
+            var mapperConfiguration = new MapperConfiguration(
+                cfg => cfg.AddProfile<MapperProfiles.EmployeeProfile>());
+            var mapper = new Mapper(mapperConfiguration);
+            
             _internalEmployeesController = new InternalEmployeesController(
-                 employeeServiceMock.Object, null);
+                 employeeServiceMock.Object, mapper);
         }
         
         [Fact]
@@ -53,29 +54,29 @@ namespace EmployeeManagement.Test
             var result = await _internalEmployeesController.GetInternalEmployees();
 
             // Assert
-            var actionResult = Assert
-                .IsType<ActionResult<IEnumerable<Models.InternalEmployeeDto>>>(result);
-            var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
-            var dtos = Assert.IsAssignableFrom<IEnumerable<Models.InternalEmployeeDto>>
+            ActionResult<IEnumerable<InternalEmployeeDto>> actionResult = Assert
+                .IsType<ActionResult<IEnumerable<InternalEmployeeDto>>>(result);
+            OkObjectResult okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            IEnumerable<InternalEmployeeDto> dtos = Assert.IsAssignableFrom<IEnumerable<InternalEmployeeDto>>
                 (okObjectResult.Value);
             Assert.Equal(3,dtos.Count());
-            var firstEmployee = dtos.First();
+            InternalEmployeeDto firstEmployee = dtos.First();
             Assert.Equal(_firstEmployee.Id, firstEmployee.Id);
             Assert.Equal(_firstEmployee.FirstName, firstEmployee.FirstName);
             Assert.Equal(_firstEmployee.LastName, firstEmployee.LastName);
             Assert.Equal(_firstEmployee.Salary, firstEmployee.Salary);
             Assert.Equal(_firstEmployee.SuggestedBonus, firstEmployee.SuggestedBonus);
-            // Assert.Equal(_firstEmployee.YearsInService, firstEmployee.YearsInService);
+            Assert.Equal(_firstEmployee.YearsInService, firstEmployee.YearsInService);
             
             // FluentAssertions
-            var actionResult2 = result.Should()
-                .BeOfType<ActionResult<IEnumerable<Models.InternalEmployeeDto>>>().Subject;
-            var okObjectResult2 = actionResult2.Result.Should().BeOfType<OkObjectResult>().Subject;
-            var dtos2 = okObjectResult2.Value
+            ActionResult<IEnumerable<InternalEmployeeDto>>? actionResult2 = result.Should()
+                .BeOfType<ActionResult<IEnumerable<InternalEmployeeDto>>>().Subject;
+            OkObjectResult okObjectResult2 = actionResult2.Result.Should().BeOfType<OkObjectResult>().Subject;
+            IEnumerable<InternalEmployeeDto> dtos2 = okObjectResult2.Value
                 .Should()
-                .BeAssignableTo<IEnumerable<Models.InternalEmployeeDto>>().Subject;
+                .BeAssignableTo<IEnumerable<InternalEmployeeDto>>().Subject;
             dtos.Should().HaveCount(3, "because there should be exactly 3 employees returned");
-            var firstEmployee2 = dtos.First();
+            InternalEmployeeDto firstEmployee2 = dtos.First();
             firstEmployee2.Should().BeEquivalentTo(_firstEmployee, options => options
                 .Including(e => e.Id)
                 .Including(e => e.FirstName)
@@ -101,13 +102,13 @@ namespace EmployeeManagement.Test
             using (new AssertionScope())
             {
                 var actionResult = Assert
-                 .IsType<ActionResult<IEnumerable<Models.InternalEmployeeDto>>>(result);
+                 .IsType<ActionResult<IEnumerable<InternalEmployeeDto>>>(result);
                 
                 Assert.IsType<OkObjectResult>(actionResult.Result);
                 
                 // FluentAssertions
                 actionResult.Should()
-                    .BeOfType<ActionResult<IEnumerable<Models.InternalEmployeeDto>>>()
+                    .BeOfType<ActionResult<IEnumerable<InternalEmployeeDto>>>()
                     .Which.Result
                     // actionResult.Result
                     .Should().BeOfType<OkObjectResult>();
@@ -125,17 +126,17 @@ namespace EmployeeManagement.Test
 
             // Assert
             var actionResult = Assert
-                .IsType<ActionResult<IEnumerable<Models.InternalEmployeeDto>>>(result);
+                .IsType<ActionResult<IEnumerable<InternalEmployeeDto>>>(result);
 
-            Assert.IsAssignableFrom<IEnumerable<Models.InternalEmployeeDto>>(
+            Assert.IsAssignableFrom<IEnumerable<InternalEmployeeDto>>(
                 ((OkObjectResult)actionResult.Result!).Value);
             
             // FluentAssertions
             var actionResult2 = result.Should()
-                .BeOfType<ActionResult<IEnumerable<Models.InternalEmployeeDto>>>().Subject;
+                .BeOfType<ActionResult<IEnumerable<InternalEmployeeDto>>>().Subject;
             
             var okResult = actionResult2.Result.Should().BeOfType<OkObjectResult>().Subject;
-            okResult.Value.Should().BeAssignableTo<IEnumerable<Models.InternalEmployeeDto>>();
+            okResult.Value.Should().BeAssignableTo<IEnumerable<InternalEmployeeDto>>();
         }
         
         [Fact]
@@ -148,22 +149,22 @@ namespace EmployeeManagement.Test
 
             // Assert
             var actionResult = Assert
-                .IsType<ActionResult<IEnumerable<Models.InternalEmployeeDto>>>(result);
+                .IsType<ActionResult<IEnumerable<InternalEmployeeDto>>>(result);
             
             Assert.Equal(3,
-                ((IEnumerable<Models.InternalEmployeeDto>)
+                ((IEnumerable<InternalEmployeeDto>)
                     ((OkObjectResult)actionResult.Result!).Value!).Count());
             
             // FluentAssertions
             var actionResult2 = result.Should()
-                .BeOfType<ActionResult<IEnumerable<Models.InternalEmployeeDto>>>().Subject;
+                .BeOfType<ActionResult<IEnumerable<InternalEmployeeDto>>>().Subject;
             
             OkObjectResult? okResult = actionResult2.Result.Should().BeOfType<OkObjectResult>().Subject;
 
-            ((IEnumerable<Models.InternalEmployeeDto>)okResult.Value!).Should().HaveCount(3);
+            ((IEnumerable<InternalEmployeeDto>)okResult.Value!).Should().HaveCount(3);
             
             // Correct use of Count with FluentAssertions
-            var employees = okResult.Value as IEnumerable<Models.InternalEmployeeDto>;
+            var employees = okResult.Value as IEnumerable<InternalEmployeeDto>;
             employees.Should()
                 .NotBeNull()
                 .And
