@@ -17,11 +17,11 @@ namespace EmployeeManagement.Test
         {
             // Arrange
             IPAddress localIpAddress = System.Net.IPAddress.Parse("111.111.111.111");
-            int localPort = 5000;
+            const int localPort = 5000;
             IPAddress remoteIpAddress = System.Net.IPAddress.Parse("222.222.222.222");
-            int remotePort = 8080;
+            const int remotePort = 8080;
 
-            var httpConnectionFeature = new HttpConnectionFeature()
+            HttpConnectionFeature httpConnectionFeature = new HttpConnectionFeature()
             {
                 LocalIpAddress = localIpAddress,
                 LocalPort = localPort,
@@ -33,6 +33,10 @@ namespace EmployeeManagement.Test
             featureCollectionMock.Setup(m => m.Get<IHttpConnectionFeature>())
                 .Returns(httpConnectionFeature);
 
+            // TODO: Try this, but statisticsDto would only be null and thus fails. 
+            var defaultHttpContext = new DefaultHttpContext();
+            defaultHttpContext.Features.Set(featureCollectionMock.Object);
+            
             var httpContextMock = new Mock<HttpContext>();
             httpContextMock.Setup(m => m.Features)
                 .Returns(featureCollectionMock.Object);
@@ -45,8 +49,10 @@ namespace EmployeeManagement.Test
 
             var statisticsController = new StatisticsController(mapper);
             
+            // statisticsController.HttpContext.
             statisticsController.ControllerContext = new ControllerContext()
             {
+                // HttpContext = defaultHttpContext,
                 HttpContext = httpContextMock.Object,
             };
             
