@@ -37,7 +37,7 @@ namespace EmployeeManagement.Test
             var defaultHttpContext = new DefaultHttpContext();
             defaultHttpContext.Features.Set(featureCollectionMock.Object);
             
-            var httpContextMock = new Mock<HttpContext>();
+            Mock<HttpContext> httpContextMock = new Mock<HttpContext>();
             httpContextMock.Setup(m => m.Features)
                 .Returns(featureCollectionMock.Object);
             

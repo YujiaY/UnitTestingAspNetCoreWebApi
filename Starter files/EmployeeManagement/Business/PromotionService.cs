@@ -25,7 +25,8 @@ namespace EmployeeManagement.Business
         /// <returns></returns>
         public async Task<bool> PromoteInternalEmployeeAsync(InternalEmployee employee)
         {
-            if (await CheckIfInternalEmployeeIsEligibleForPromotion(employee.Id))
+            bool test = await CheckIfInternalEmployeeIsEligibleForPromotion(employee.Id);
+            if (test)
             {
                 employee.JobLevel++;
                 await _employeeManagementRepository.SaveChangesAsync();
@@ -45,12 +46,12 @@ namespace EmployeeManagement.Business
             // call into API
             var apiRoot = "http://localhost:5057";
 
-            var request = new HttpRequestMessage(HttpMethod.Get,
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get,
                 $"{apiRoot}/api/promotioneligibilities/{employeeId}");
             request.Headers.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
-            var response = await _httpClient.SendAsync(request);
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             // deserialize content
