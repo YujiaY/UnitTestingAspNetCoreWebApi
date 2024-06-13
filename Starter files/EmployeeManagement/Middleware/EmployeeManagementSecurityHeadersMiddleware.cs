@@ -11,11 +11,15 @@
 
         public async Task InvokeAsync(HttpContext context)
         {
-            IHeaderDictionary headers = context.Response.Headers;
+            IHeaderDictionary requestHeaders = context.Request.Headers;
+            IHeaderDictionary responseHeaders = context.Response.Headers;
              
             // Add CSP + X-Content-Type
-            headers["Content-Security-Policy"] = "default-src 'self';frame-ancestors 'none';"; 
-            headers["X-Content-Type-Options"] = "nosniff"; 
+            requestHeaders.ContentSecurityPolicy = "default-src 'self';frame-ancestors 'none';"; 
+            requestHeaders.XContentTypeOptions = "nosniff";
+            responseHeaders.ContentSecurityPolicy = "default-src 'self';frame-ancestors 'none';"; 
+            responseHeaders.XContentTypeOptions = "nosniff";
+            Console.WriteLine("Security headers added.");
 
             await _next(context);
         }
