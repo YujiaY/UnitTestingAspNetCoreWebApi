@@ -15,8 +15,8 @@ namespace EmployeeManagement.ActionFilters
             }
 
             // get the ShowStatistics header 
-            if (!bool.TryParse(
-                    context.HttpContext.Request.Headers["ShowStatistics"].ToString(), 
+            var testResult = context.HttpContext.Request.Headers["ShowStatistics"].ToString();
+            if (!bool.TryParse(testResult, 
                     out bool showStatisticsValue))
             {
                 context.Result = new BadRequestResult();
