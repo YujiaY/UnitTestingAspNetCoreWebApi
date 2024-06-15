@@ -37,14 +37,14 @@ namespace EmployeeManagement.Business
 
             // add course 
             employee.AttendedCourses.Add(attendedCourse);
-
-            // save changes 
-            await _employeeManagementRepository.SaveChangesAsync();
-
+            
             // execute business logic: when a course is attended, 
             // the suggested bonus must be recalculated
             employee.SuggestedBonus = employee.YearsInService
                 * employee.AttendedCourses.Count * 100;
+            
+            // save changes 
+            await _employeeManagementRepository.SaveChangesAsync();
         }
 
         public async Task GiveMinimumRaiseAsync(InternalEmployee employee)

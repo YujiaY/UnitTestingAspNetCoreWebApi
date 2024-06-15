@@ -93,8 +93,8 @@ public class CheckShowStatisticsHeaderTests
         DefaultHttpContext httpContext = new();
         httpContext.Request.Headers["ShowStatistics"] = "true";
 
-        ActionContext actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor(),
-            new ModelStateDictionary());
+        ActionContext actionContext = new ActionContext(
+            httpContext, new RouteData(), new ActionDescriptor(), new ModelStateDictionary());
         ActionExecutingContext actionExecutingContext = new(actionContext,
             new List<IFilterMetadata>(),
             new Dictionary<string, object?>(),
